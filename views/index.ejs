@@ -1,12 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title><%= title %></title>
-	<link rel="stylesheet" href="/stylesheets/style.css" />
-	<script src="/scripts/test.js"></script>
+<!--
+	Flowerbox
+	Copyright (C) 2010-2016 Kayateia
+	For license info, please see notes/gpl-3.0.txt under the project root.
+
+	CliMOO - Multi-User Dungeon, Object Oriented for the web
+	Copyright (C) 2010-2014 Kayateia
+-->
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>FlowerBox</title>
+
+	<!-- Bootstrap -->
+	<link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="/bower_components/jquery.timers/jquery.timers.js"></script>
+	<!-- We're using a custom JQuery hotkeys here because the current one doesn't provide as useful
+		of an interface for us as what this other one has. -->
+	<script type="text/javascript" src="/scripts/jquery.hotkeys.js"></script>
+	<script type="text/javascript" src="/scripts/kayateia.term.js"></script>
+	<!-- <script type="text/javascript" src="/scripts/kayateia.modalpopup.js"></script> -->
+	<!-- <script type="text/javascript" src="/scripts/kayateia.climoo.editors.js"></script> -->
+	<script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<link rel="Stylesheet" href="/css/term.css" />
+	<link rel="Stylesheet" href="/css/game.css" />
+	<link rel="Stylesheet" href="/css/modalpopup.css" />
+	<link rel="Stylesheet" href="/css/sidebar.css" />
 </head>
 <body>
-	<h1><%= title %></h1>
-	<p>Welcome to <%= title %></p>
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</button> -->
+				<a class="navbar-brand" href="#">Flowerbox</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active"><a href="#">Console</a></li>
+					<li><a href="#login">Login</a></li>
+					<li><a href="http://kayateia.net/flowerbox/">About</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+	<div class="mainbox">
+		<div class="maincontents">
+			<div class="terminal themed">
+				<div id="term-text"></div>
+				<div id="input">
+					<!-- These have to stay on one line not to trigger the 'pre' whitespace -->
+					<span id="input-prompt" class="prompt"></span><span id="input-left"></span><span id="input-cursor" class="cursor cursor-size cursor-flash">&nbsp;</span><span id="input-right"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar" class="sidebarcontents">
+	</div>
+
+	<img id="input-spinner-template" class="input-spinner" src="/images/spiral-spinner-000.gif" alt="[spinner]" />
 </body>
 </html>

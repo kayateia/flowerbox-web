@@ -1,0 +1,72 @@
+﻿/*
+	CliMOO - Multi-User Dungeon, Object Oriented for the web
+	Copyright (C) 2010-2014 Kayateia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* Adds a cute little triangle arrow for popups related to items
+	in the viewport. Not something we really use right now. */
+/* div.modelpopup:after {
+	border-color: #fff transparent transparent;
+	border-style: solid;
+	border-width: 10px 10px;
+	bottom: -20px;
+	content:"\00a0";
+	display: block;
+	height: 0;
+	left: 75px;
+	position: absolute;
+	width: 0;
+} */
+
+/*
+ * Bootstrap modal dialogs
+ */
+.modal-header {
+	background-image: -webkit-linear-gradient(top, #668 0%, #224 100%);
+	background-image:      -o-linear-gradient(top, #668 0%, #224 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#668), to(#224));
+	background-image:         linear-gradient(to bottom, #668 0%, #224 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff606080', endColorstr='#ff202040', GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+	background-repeat: repeat-x;
+	border-radius: 4px;
+	color: #ccc;
+/*	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 5px rgba(0, 0, 0, .075);
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 5px rgba(0, 0, 0, .075); */
+}
+.modal-content {
+	background-color: #224;
+	color: #bbb;
+}
+.modal-content input {
+	color: #000;
+}
+.modal-content textarea {
+	color: #000;
+}
+
+/*
+ * CliMOO editor dialogs
+ */
+.editor-dialog .form-row {
+	margin-bottom: 5px;
+}
+.editor-dialog label {
+	vertical-align: top;
+}
+.editor-dialog textarea {
+	resize: vertical;
+}
