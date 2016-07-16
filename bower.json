@@ -1,0 +1,21 @@
+{
+  "name": "flowerbox-web",
+  "description": "Flowerbox Web Client",
+  "main": "index.js",
+  "authors": [
+    "Kayateia <github@kayateia.net>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
