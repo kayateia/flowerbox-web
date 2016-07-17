@@ -451,9 +451,12 @@ let Term = {
 // "push" query for text coming back asynchronously.
 let TermAjax = {
 	settings: {
-		execUrl:		"/game/exec",
-		pushUrl:		"/game/push-check"
+		execUrl:		"http://localhost:3001/terminal/command",
+		pushUrl:		"http://localhost:3001/terminal/new-output"
 	},
+
+	// Newest backlog item we've seen.
+	newest: 0,
 
 	// Executes the command on the server via AJAX, with a nice spinner.
 	// If squelchText is non-null/empty, it will be printed instead of the command.
@@ -462,9 +465,9 @@ let TermAjax = {
 			squelchText = commandText;
 		var spinnerId = Term.writeCommand(squelchText, true);
 		$.ajax({
-			url: TermAjax.settings.execUrl + "?cmd="
+			url: TermAjax.settings.execUrl + "/"
 					+ escape(commandText)
-					+ "&datehack=" + new Date().getTime(),
+					+ "?datehack=" + new Date().getTime(),
 			dataType: 'json',
 			success: function(data) {
 				Term.spinner.finish(spinnerId);
@@ -476,14 +479,36 @@ let TermAjax = {
 	},
 
 	handleResponse: function(data) {
-		if (data.text)
+		if (!data.success) {
+			console.log("Got bad console output response:", data.error);
+			return;
+		}
+
+		if (!data.log) {
+			console.log("Data.log is empty", data);
+			return;
+		}
+
+		data.log.forEach(function(log) {
+			var items = log.items.map(function(i) {
+				if (typeof(i) === "object") {
+					if (i.rich === "wob")
+						i = '<a style="color:#5aa" href="/objinfo/' + i.id + '">' + i.text + "</a>";
+				}
+				return i;
+			});
+			Term.write(log.timestamp + ": " + items.join(" ") + "\n");
+			TermAjax.newest = Math.max(TermAjax.newest, log.timestamp);
+		});
+
+		/*if (data.text)
 			Term.write(data.text);
 		if (data.prompt)
 			Term.settings.prompt = data.prompt;
 		if (data.sidebar && Term.settings.sidebarHandler)
 			Term.settings.sidebarHandler(data.sidebar);
 		if (data.sound && Term.settings.soundHandler)
-			Term.settings.soundHandler(data.sound);
+			Term.settings.soundHandler(data.sound); */
 	},
 
 	// Generates an error handler for terminal-based AJAX requests.
@@ -522,7 +547,7 @@ let TermAjax = {
 			}
 		}
 		$.ajax({
-			url: TermAjax.settings.pushUrl + "?datehack=" + new Date().getTime(),
+			url: TermAjax.settings.pushUrl + "?datehack=" + new Date().getTime() + "&since=" + (TermAjax.newest + 1),
 			dataType: 'json',
 			data: {},
 			success:
@@ -531,7 +556,7 @@ let TermAjax = {
 					TermAjax.pushBegin();
 				},
 			error: errorFunction,
-			timeout: 30000
+			timeout: 12000
 		});
 	},
 
