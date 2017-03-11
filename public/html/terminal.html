@@ -1,0 +1,39 @@
+<!--
+	Flowerbox
+	Copyright (C) 2010-2017 Kayateia
+	For license info, please see notes/gpl-3.0.txt under the project root.
+
+	CliMOO - Multi-User Dungeon, Object Oriented for the web
+	Copyright (C) 2010-2014 Kayateia
+-->
+
+<script type="text/javascript" src="/bower_components/jquery.timers/jquery.timers.js"></script>
+<!-- We're using a custom JQuery hotkeys here because the current one doesn't provide as useful
+	of an interface for us as what this other one has. -->
+<script type="text/javascript" src="/scripts/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="/scripts/kayateia.term.js"></script>
+<link rel="Stylesheet" href="/css/term.css" />
+
+<!-- <link rel="Stylesheet" href="/css/game.css" />
+<link rel="Stylesheet" href="/css/modalpopup.css" />
+<link rel="Stylesheet" href="/css/sidebar.css" /> -->
+
+<dom-module id="fb-terminal">
+	<template>
+		<style>
+		</style>
+		<div id="mainterm">
+			<div class="terminal themed">
+				<div id="term-text"></div>
+				<div id="input">
+					<!-- These have to stay on one line not to trigger the 'pre' whitespace -->
+					<span id="input-prompt" class="prompt"></span><span id="input-left"></span><span id="input-cursor" class="cursor cursor-size cursor-flash">&nbsp;</span><span id="input-right"></span>
+				</div>
+			</div>
+
+			<img id="input-spinner-template" class="input-spinner" src="/images/spiral-spinner-000.gif" alt="[spinner]" />
+		</div>
+	</template>
+</dom-module>
+
+<script src="/scripts/terminal.js"></script>

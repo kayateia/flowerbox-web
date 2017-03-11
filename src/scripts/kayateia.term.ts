@@ -16,7 +16,7 @@ but it's not derivative of it.
 
 */
 
-///<reference path="../../typings/globals/jquery/index.d.ts" />
+///<reference path="../../node_modules/@types/jquery/index.d.ts" />
 
 interface JQuery {
 	everyTime: any;
@@ -39,8 +39,8 @@ let Term = {
 		prompt:			"fb&gt; ",
 		cursorSpeed:	500,
 		commandHandler:	null,
-		sidebarHandler: null,
-		soundHandler:	null
+		soundHandler:	null,
+		div:			null
 	},
 
 	///////////////////////////////////////////////////
@@ -51,7 +51,7 @@ let Term = {
 		// Start an AJAX command and return its ID and a ready-to-go spinner.
 		start: function() {
 			var thisCmd = ++this._cmdCount;
-			var spinnerCode = $('#input-spinner-template').clone();
+			var spinnerCode = $(Term.settings.div).find('#input-spinner-template').clone();
 			spinnerCode
 				.prop('id', 'spinner-' + thisCmd)
 				.fadeIn(100);
@@ -60,7 +60,7 @@ let Term = {
 
 		// Finish an AJAX command and take the spinner out of commission.
 		finish: function(cmdId, replaceWith?) {
-			$('#spinner-' + cmdId).fadeOut(100, function() {
+			$(Term.settings.div).find('#spinner-' + cmdId).fadeOut(100, function() {
 				if (replaceWith)
 					$(this).before(replaceWith);
 				$(this).remove();
@@ -73,7 +73,7 @@ let Term = {
 	scroll: {
 		// Scroll by however many pages (-/+)
 		scroll: function(pages) {
-			var display = $('.terminal');
+			var display = $(Term.settings.div).find('.terminal');
 			display.animate({
 				scrollTop: display.scrollTop() + pages * (display.height() * .75)
 			}, 100, 'linear');
@@ -81,7 +81,7 @@ let Term = {
 
 		// Scroll to the bottom.
 		toBottom: function() {
-			var display = $('.terminal');
+			var display = $(Term.settings.div).find('.terminal');
 			display.animate({
 				scrollTop: display.prop('scrollHeight')
 			}, 100, 'linear');
@@ -104,9 +104,9 @@ let Term = {
 				right = this._curLine.substring(this._cursorPos + 1, this._curLine.length);
 			}
 
-			$('#input-left').html(left);
-			$('#input-cursor').html(onCursor);
-			$('#input-right').html(right);
+			$(Term.settings.div).find('#input-left').html(left);
+			$(Term.settings.div).find('#input-cursor').html(onCursor);
+			$(Term.settings.div).find('#input-right').html(right);
 		},
 
 		set: function(newval) {
@@ -292,7 +292,7 @@ let Term = {
 	// Output processing
 	write: function(text, needSpinner?) {
 		var $outputBlock = $('<div class="output-block">' + text + '</div>');
-		$('#term-text').append($outputBlock);
+		$(Term.settings.div).find('#term-text').append($outputBlock);
 
 		var spinnerId;
 		if (needSpinner) {
@@ -329,12 +329,14 @@ let Term = {
 	///////////////////////////////////////////////////
 	// Global init -- call from document.ready
 	active: true,
-	init: function() {
+	init: function(terminalDiv: HTMLElement) {
+		Term.settings.div = terminalDiv;
+
 		// Set the prompt.
-		$('#input-prompt').html(Term.settings.prompt);
+		$(Term.settings.div).find('#input-prompt').html(Term.settings.prompt);
 
 		// Cursor flashing
-		$('.cursor-flash').everyTime(500, "cursor-flash", function () {
+		$(Term.settings.div).find('.cursor-flash').everyTime(500, "cursor-flash", function () {
 			if (Term.active)
 				$(this).toggleClass('on');
 			else
@@ -433,16 +435,16 @@ let Term = {
 			}
 		});
 
-		$('.terminal').prop('tabindex', 0);
-		$('.terminal').blur(function(evt) {
+		$(Term.settings.div).find('.terminal').prop('tabindex', 0);
+		$(Term.settings.div).find('.terminal').blur(function(evt) {
 			Term.active = false;
 		});
 
-		$('.terminal').focus(function(evt) {
+		$(Term.settings.div).find('.terminal').focus(function(evt) {
 			Term.active = true;
 		});
 
-		$('.terminal').focus();
+		$(Term.settings.div).find('.terminal').focus();
 	}
 };
 
@@ -505,8 +507,6 @@ let TermAjax = {
 			Term.write(data.text);
 		if (data.prompt)
 			Term.settings.prompt = data.prompt;
-		if (data.sidebar && Term.settings.sidebarHandler)
-			Term.settings.sidebarHandler(data.sidebar);
 		if (data.sound && Term.settings.soundHandler)
 			Term.settings.soundHandler(data.sound); */
 	},
@@ -620,18 +620,6 @@ let HelpHandler = {
 	}
 };
 
-// Sidebar handler. This just takes care of shuttling contents from AJAX calls
-// back to the sidebar.
-let SidebarHandler = {
-	init: function() {
-		Term.settings.sidebarHandler = SidebarHandler.handle;
-	},
-
-	handle: function(data) {
-		$('#sidebar').load(data);
-	}
-};
-
 // Sound handler. Takes care of downloading and activating sounds by HTML5 API.
 let SoundHandler = {
 	init: function() {
@@ -687,12 +675,11 @@ let SoundHandler = {
 	sounds: {}
 };
 
-// Activate the terminal.
-$(document).ready(function() {
-	Term.init();
+// Activate the terminal. This should be called only after the document is loaded.
+function termInit(terminalDiv: HTMLElement) {
+	Term.init(terminalDiv);
 	TermAjax.init();
 	TermLocal.init();
-	SidebarHandler.init();
 	SoundHandler.init();
 	HelpHandler.init();
-});
+}
