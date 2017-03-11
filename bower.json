@@ -28,6 +28,8 @@
     "simple-modal": "simple-modal-element#^0.3.2",
     "paper-input": "^1.1.23",
     "paper-spinner": "^1.2.1",
-    "js-cookie": "^2.1.3"
+    "js-cookie": "^2.1.3",
+    "cytoscape": "^2.7.16",
+    "cytoscape-cose-bilkent": "^1.5.3"
   }
 }
