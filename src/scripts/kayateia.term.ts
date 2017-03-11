@@ -1,6 +1,6 @@
 /*
 	Flowerbox
-	Copyright (C) 2010-2016 Kayateia
+	Copyright (C) 2010-2017 Kayateia
 	For license info, please see notes/gpl-3.0.txt under the project root.
 
 	CliMOO - Multi-User Dungeon, Object Oriented for the web
@@ -453,8 +453,7 @@ let Term = {
 // "push" query for text coming back asynchronously.
 let TermAjax = {
 	settings: {
-		execUrl:		"http://localhost:3001/terminal/command",
-		pushUrl:		"http://localhost:3001/terminal/new-output"
+		fbapi:		null
 	},
 
 	// Newest backlog item we've seen.
@@ -466,18 +465,9 @@ let TermAjax = {
 		if (!squelchText)
 			squelchText = commandText;
 		var spinnerId = Term.writeCommand(squelchText, true);
-		$.ajax({
-			url: TermAjax.settings.execUrl + "/"
-					+ escape(commandText)
-					+ "?datehack=" + new Date().getTime(),
-			dataType: 'json',
-			success: function(data) {
-				Term.spinner.finish(spinnerId);
-				TermAjax.handleResponse(data);
-			},
-			error: TermAjax.standardErrorHandler(spinnerId),
-			timeout: 30000
-		});
+		TermAjax.settings.fbapi.terminalExec(commandText, () => {
+			Term.spinner.finish(spinnerId);
+		}, TermAjax.standardErrorHandler(spinnerId));
 	},
 
 	handleResponse: function(data) {
@@ -535,29 +525,23 @@ let TermAjax = {
 	// immediately with results, and we will query again immediately;
 	// otherwise the timeout will happen and we'll start again.
 	pushBegin: function() {
-		function errorFunction(xhr, status, err) {
-			if (status == "timeout") {
+		function errorFunction(timeout: boolean, err: string) {
+			if (timeout) {
 				TermAjax.pushBegin();
 			} else {
 				// Wait a bit on error, in case something is flooded.
-				console.log("error", status, err);
+				console.log("error", err);
 				$(document).oneTime(3000, "push-reset", function() {
 					TermAjax.pushBegin();
 				});
 			}
 		}
-		$.ajax({
-			url: TermAjax.settings.pushUrl + "?datehack=" + new Date().getTime() + "&since=" + (TermAjax.newest + 1),
-			dataType: 'json',
-			data: {},
-			success:
-				function (data) {
-					TermAjax.handleResponse(data);
-					TermAjax.pushBegin();
-				},
-			error: errorFunction,
-			timeout: 12000
-		});
+		TermAjax.settings.fbapi.terminalNewEvents((TermAjax.newest + 1),
+			(data: any) => {
+				TermAjax.handleResponse(data);
+				TermAjax.pushBegin();
+			},
+			errorFunction);
 	},
 
 	init: function() {
@@ -682,4 +666,8 @@ function termInit(terminalDiv: HTMLElement) {
 	TermLocal.init();
 	SoundHandler.init();
 	HelpHandler.init();
+}
+
+function termSetApi(fbapi: Flowerbox) {
+	TermAjax.settings.fbapi = fbapi;
 }

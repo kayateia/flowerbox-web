@@ -27,19 +27,21 @@ class AppComponent extends polymer.Base implements polymer.Element {
 		// Look for login cookies. If we find one, just use that. Otherwise, the user will
 		// have to manually login to get a cookie.
 		let appCookie = Cookies.get("flowerbox");
-		if (appCookie)
+		if (appCookie) {
 			this._cookie = JSON.parse(appCookie);
-		else
+			this._apiChanged();
+		} else {
 			this._cookie = {
 				login: "Not logged in",
 				token: null,
 				admin: false
 			};
+		}
 	}
 
 	@observe("api")
 	private _apiChanged() {
-		this._fbapi = new Flowerbox(this.api);
+		this._fbapi = new Flowerbox(this.api, this._cookie ? this._cookie.token : null);
 	}
 
 	private _showLogin() {
@@ -48,7 +50,6 @@ class AppComponent extends polymer.Base implements polymer.Element {
 
 	private _login(event: any) {
 		let info: LoginInfo = event.detail;
-		console.log("login", info.login, "pw", info.password);
 		this._fbapi.login(info.login, info.password, (token: string, error: string) => {
 			if (token) {
 				console.log("got token", token);
