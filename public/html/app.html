@@ -25,8 +25,8 @@
 	<template>
 		<style>
 			app-toolbar {
-				background-color: #4285f4;
-				color: #fff;
+				background-color: #2c3f2c;
+				color: #aaa;
 			}
 
 			paper-icon-button {
@@ -44,19 +44,23 @@
 			}
 			app-header {
 				@apply(--layout-fixed-top);
-				color: #fff;
+				color: #aaa;
 				--app-header-background-rear-layer: {
-					background-color: #ef6c00;
+					background-color: #2c3f2c;
 				};
 			}
 			app-drawer {
 				/*--app-drawer-scrim-background: rgba(0, 0, 100, 0.8); */
 				--app-drawer-content-container: {
-					background-color: #B0BEC5;
+					background-color: #2c2c2c;
 				}
 			}
 			sample-content {
 				padding-top: 64px;
+			}
+
+			#center-container {
+				position: relative;
 			}
 		</style>
 		<login-modal id="loginmodal" on-login="_login">
