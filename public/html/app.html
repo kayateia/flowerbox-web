@@ -57,16 +57,14 @@
 				padding-top: 64px;
 			}
 		</style>
-		<login-modal id="login-modal" on-login="_login">
+		<login-modal id="loginmodal" on-login="_login">
 			<p>Login stuff goes here.</p>
 		</login-modal>
 
 		<app-drawer-layout>
 			<app-drawer align="end">
 				<app-toolbar>
-					<a onclick="document.querySelector('#login-modal').show();">
-						<paper-icon-button icon="power-settings-new"></paper-icon-button>
-					</a>
+					<paper-icon-button on-click="_showLogin" icon="power-settings-new"></paper-icon-button>
 				</app-toolbar>
 				<paper-card>
 					<div>RHS stuff.</div>

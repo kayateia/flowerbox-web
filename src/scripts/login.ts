@@ -24,7 +24,7 @@ class LoginModal extends polymer.Base implements polymer.Element {
 		this.$.spinner.active = false;
 	}
 
-	public hide() {
+	public close() {
 		this._clear();
 		this.$.loginmodal.active = false;
 	}
@@ -41,6 +41,7 @@ class LoginModal extends polymer.Base implements polymer.Element {
 			password: this.$.password.value
 		};
 
+		this.error("");
 		this.$.spinner.active = true;
 		this.fire("login", info);
 	}
