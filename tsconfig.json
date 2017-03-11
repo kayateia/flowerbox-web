@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es6",
+		"target": "es5",
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"isolatedModules": false,
@@ -19,7 +19,8 @@
 	"exclude": [
 		"node_modules",
 		"typings",
-		"local"
+		"local",
+		"bower_components"
 	],
 	"compileOnSave": true,
 	"buildOnSave": false,

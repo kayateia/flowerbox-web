@@ -4,8 +4,6 @@
 	For license info, please see notes/gpl-3.0.txt under the project root.
 */
 
-///<reference path="../typings/globals/node/index.d.ts" />
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -30,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use("/bower_components", express.static(path.join(__dirname, "..", "bower_components")));
-app.use("/scripts", express.static(path.join(__dirname, "scripts")));
+app.use("/scripts", express.static(path.join(__dirname, "..", "js", "scripts")));
 
 app.use("/", routes);
 app.use("/users", users);

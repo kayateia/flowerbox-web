@@ -1,0 +1,99 @@
+<!--
+	Flowerbox
+	Copyright (C) 2017 Kayateia
+	For license info, please see notes/gpl-3.0.txt under the project root.
+-->
+
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html" />
+
+<link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html" />
+<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html" />
+<link rel="import" href="/bower_components/app-layout/app-scroll-effects/app-scroll-effects.html" />
+<link rel="import" href="/bower_components/app-layout/app-header/app-header.html" />
+<link rel="import" href="/bower_components/app-layout/app-header-layout/app-header-layout.html" />
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html" />
+
+<link rel="import" href="/bower_components/app-layout/demo/sample-content.html" />
+
+<link rel="import" href="/bower_components/paper-card/paper-card.html" />
+<link rel="import" href="/html/login.html" />
+
+<dom-module id="fb-app">
+	<template>
+		<style>
+			app-toolbar {
+				background-color: #4285f4;
+				color: #fff;
+			}
+
+			paper-icon-button {
+				--paper-icon-button-ink-color: white;
+			}
+
+			paper-icon-button + [main-title] {
+				margin-left: 24px;
+			}
+			paper-progress {
+				display: block;
+				width: 100%;
+				--paper-progress-active-color: rgba(255, 255, 255, 0.5);
+				--paper-progress-container-color: transparent;
+			}
+			app-header {
+				@apply(--layout-fixed-top);
+				color: #fff;
+				--app-header-background-rear-layer: {
+					background-color: #ef6c00;
+				};
+			}
+			app-drawer {
+				/*--app-drawer-scrim-background: rgba(0, 0, 100, 0.8); */
+				--app-drawer-content-container: {
+					background-color: #B0BEC5;
+				}
+			}
+			sample-content {
+				padding-top: 64px;
+			}
+		</style>
+		<login-modal id="login-modal" on-login="_login">
+			<p>Login stuff goes here.</p>
+		</login-modal>
+
+		<app-drawer-layout>
+			<app-drawer align="end">
+				<app-toolbar>
+					<a onclick="document.querySelector('#login-modal').show();">
+						<paper-icon-button icon="power-settings-new"></paper-icon-button>
+					</a>
+				</app-toolbar>
+				<paper-card>
+					<div>RHS stuff.</div>
+				</paper-card>
+			</app-drawer>
+			<app-drawer-layout>
+				<app-drawer>
+					<app-toolbar>
+						<div main-title>Flowerbox</div>
+					</app-toolbar>
+					<paper-card>
+						<div>Some stuff.</div>
+					</paper-card>
+				</app-drawer>
+				<app-header-layout>
+				 	<app-header fixed>
+						<app-toolbar>
+							<!-- <paper-progress value="10" indeterminate bottom-item></paper-progress> -->
+				 		</app-toolbar>
+					</app-header>
+					<sample-content size="10"></sample-content>
+				</app-header-layout>
+			</app-drawer-layout>
+		</app-drawer-layout>
+
+		<!-- <img id="input-spinner-template" class="input-spinner" src="/images/spiral-spinner-000.gif" alt="[spinner]" /> -->
+	</template>
+</dom-module>
+
+<script src="/scripts/app.js"></script>

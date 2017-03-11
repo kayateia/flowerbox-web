@@ -1,0 +1,57 @@
+<!--
+	Flowerbox
+	Copyright (C) 2017 Kayateia
+	For license info, please see notes/gpl-3.0.txt under the project root.
+-->
+
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html" />
+
+<link rel="import" href="/bower_components/simple-modal/simple-modal.html" />
+<link rel="import" href="/bower_components/paper-input/paper-input.html" />
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="/bower_components/paper-spinner/paper-spinner.html" />
+
+<dom-module id="login-modal">
+	<template>
+		<style>
+			paper-icon-button {
+				margin-left: 5px;
+				margin-right: 5px;
+			}
+
+			#message {
+				margin-top: 10px;
+				text-align: center;
+			}
+
+			#buttons {
+				margin-top: 10px;
+				text-align: center;
+			}
+
+			#spinnerdiv {
+				margin-top: 10px;
+				text-align: center;
+			}
+		</style>
+		<simple-modal id="loginmodal" title="Log In">
+			<paper-input id="login" label="login">
+				<iron-icon icon="mail" prefix></iron-icon>
+			</paper-input>
+			<paper-input id="password" label="password" type="password">
+				<iron-icon icon="input" prefix></iron-icon>
+			</paper-input>
+			<div id="message"></div>
+			<div id="buttons">
+				<paper-icon-button icon="check" on-click="_loginClick"></paper-icon-button>
+				<paper-icon-button icon="close" on-click="_cancelClick"></paper-icon-button>
+			</div>
+			<div id="spinnerdiv">
+				<paper-spinner id="spinner"></paper-spinner>
+			</div>
+		</simple-modal>
+	</template>
+</dom-module>
+
+<script src="/scripts/login.js"></script>
