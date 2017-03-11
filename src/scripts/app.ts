@@ -5,6 +5,13 @@
 */
 
 ///<reference path="../../bower_components/polymer-ts/polymer-ts.d.ts" />
+///<reference path="../../node_modules/@types/js-cookie/index.d.ts" />
+
+interface AppCookie {
+	login: string;
+	token: string;
+	admin: boolean;
+}
 
 @component("fb-app")
 class AppComponent extends polymer.Base implements polymer.Element {
@@ -12,6 +19,23 @@ class AppComponent extends polymer.Base implements polymer.Element {
 	public api: string;
 
 	private _fbapi: Flowerbox;
+	private _cookie: AppCookie;
+
+	constructor() {
+		super();
+
+		// Look for login cookies. If we find one, just use that. Otherwise, the user will
+		// have to manually login to get a cookie.
+		let appCookie = Cookies.get("flowerbox");
+		if (appCookie)
+			this._cookie = JSON.parse(appCookie);
+		else
+			this._cookie = {
+				login: "Not logged in",
+				token: null,
+				admin: false
+			};
+	}
 
 	@observe("api")
 	private _apiChanged() {
@@ -29,6 +53,13 @@ class AppComponent extends polymer.Base implements polymer.Element {
 			if (token) {
 				console.log("got token", token);
 				this.$.loginmodal.close();
+
+				this._cookie = {
+					login: info.login,
+					token: token,
+					admin: false
+				};
+				Cookies.set("flowerbox", JSON.stringify(this._cookie));
 			} else {
 				console.log("got error", error);
 				this.$.loginmodal.error(error);

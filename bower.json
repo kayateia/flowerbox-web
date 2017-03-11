@@ -27,6 +27,7 @@
     "paper-card": "PolymerElements/paper-card#^1.1.4",
     "simple-modal": "simple-modal-element#^0.3.2",
     "paper-input": "^1.1.23",
-    "paper-spinner": "^1.2.1"
+    "paper-spinner": "^1.2.1",
+    "js-cookie": "^2.1.3"
   }
 }
