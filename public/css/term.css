@@ -79,3 +79,19 @@
 	width: 12px;
 	height: 12px;
 }
+
+.terminal .toutput {
+}
+
+.terminal .tdebug {
+	color: #474;
+}
+
+.terminal .tcommand {
+	color: #799;
+	font-weight: bolder;
+}
+
+.terminal .tparse_error {
+	color: #888;
+}

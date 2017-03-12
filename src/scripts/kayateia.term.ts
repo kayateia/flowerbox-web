@@ -453,11 +453,15 @@ let Term = {
 // "push" query for text coming back asynchronously.
 let TermAjax = {
 	settings: {
-		fbapi:		null
+		fbapi:	 	null,
+		appbus:		null
 	},
 
 	// Newest backlog item we've seen.
 	newest: 0,
+
+	// Are we doing the initial check?
+	firstCheck: true,
 
 	// Executes the command on the server via AJAX, with a nice spinner.
 	// If squelchText is non-null/empty, it will be printed instead of the command.
@@ -474,7 +478,7 @@ let TermAjax = {
 			});
 	},
 
-	handleResponse: function(data) {
+	handleResponse: function(data: fbapi.EventStream) {
 		if (!data.success) {
 			console.log("Got bad console output response:", data.error);
 			return;
@@ -486,15 +490,27 @@ let TermAjax = {
 		}
 
 		data.log.forEach(function(log) {
-			var items = log.items.map(function(i) {
-				if (typeof(i) === "object") {
-					if (i.rich === "wob")
-						i = '<a style="color:#5aa" href="/objinfo/' + i.id + '">' + i.text + "</a>";
+			// console.log("received:", log);
+			if (log.type === "output" || log.type === "debug" || log.type === "command" || log.type === "parse_error") {
+				var items = log.items.map(function(i) {
+					if (typeof(i) === "object") {
+						if (i.rich === "wob")
+							i = '<a style="color:#5aa" href="/objinfo/' + i.id + '">' + i.text + "</a>";
+					}
+					return i;
+				});
+				Term.write(log.timestamp + ': <span class="t' + log.type + '">' + items.join(" ") + "</span>\n");
+			} else if (log.type === "move_notification") {
+				if (!TermAjax.firstCheck && TermAjax.settings.appbus) {
+					TermAjax.settings.appbus.moveNotification(log.items[0], log.items[1], log.items[2]);
 				}
-				return i;
-			});
-			Term.write(log.timestamp + ": " + items.join(" ") + "\n");
+			} else {
+				// Ignore it.
+				console.log("Ignored event stream item:", log);
+			}
+
 			TermAjax.newest = Math.max(TermAjax.newest, log.timestamp);
+			TermAjax.firstCheck = false;
 		});
 
 		/*if (data.text)
@@ -541,7 +557,7 @@ let TermAjax = {
 			}
 		}
 		TermAjax.settings.fbapi.terminalNewEvents((TermAjax.newest + 1),
-			(data: any) => {
+			(data: fbapi.EventStream) => {
 				TermAjax.handleResponse(data);
 				TermAjax.pushBegin();
 			},
@@ -666,12 +682,13 @@ let SoundHandler = {
 // Activate the terminal. This should be called only after the document is loaded.
 function termInit(terminalDiv: HTMLElement) {
 	Term.init(terminalDiv);
-	TermAjax.init();
 	TermLocal.init();
 	SoundHandler.init();
 	HelpHandler.init();
 }
 
-function termSetApi(fbapi: Flowerbox) {
+function termSetApi(fbapi: Flowerbox, appbus: AppBus) {
 	TermAjax.settings.fbapi = fbapi;
+	TermAjax.settings.appbus = appbus;
+	TermAjax.init();
 }

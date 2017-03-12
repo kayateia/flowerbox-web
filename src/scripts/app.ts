@@ -19,6 +19,7 @@ class AppComponent extends polymer.Base implements polymer.Element {
 	public api: string;
 
 	private _fbapi: Flowerbox;
+	private _bus: AppBus;
 	private _cookie: AppCookie;
 
 	constructor() {
@@ -42,6 +43,7 @@ class AppComponent extends polymer.Base implements polymer.Element {
 	@observe("api")
 	private _apiChanged() {
 		this._fbapi = new Flowerbox(this.api, this._cookie ? this._cookie.token : null);
+		this._bus = new AppBus();
 	}
 
 	private _showLogin() {
