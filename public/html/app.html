@@ -16,10 +16,10 @@
 
 <link rel="import" href="/bower_components/app-layout/demo/sample-content.html" />
 
-<link rel="import" href="/bower_components/paper-card/paper-card.html" />
 <link rel="import" href="/html/login.html" />
 <link rel="import" href="/html/vis-graph.html" />
 <link rel="import" href="/html/terminal.html" />
+<link rel="import" href="/html/property-bar.html" />
 
 <dom-module id="fb-app">
 	<template>
@@ -72,9 +72,7 @@
 				<app-toolbar>
 					<paper-icon-button on-click="_showLogin" icon="power-settings-new"></paper-icon-button>
 				</app-toolbar>
-				<paper-card>
-					<div>RHS stuff.</div>
-				</paper-card>
+				<property-bar fbapi="{{_fbapi}}" appbus="{{_bus}}"></property-bar>
 			</app-drawer>
 			<app-drawer-layout>
 				<app-drawer>
