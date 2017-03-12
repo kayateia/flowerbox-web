@@ -483,7 +483,6 @@ let TermAjax = {
 	},
 
 	click: function(item: number): void {
-		console.log("Terminal clicked", item);
 		TermAjax.settings.appbus.selectedWob(item);
 	},
 

@@ -266,7 +266,6 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 
 		this._cy.on("click", "node", function(e) {
 			let node = this;
-			console.log("Graph clicked", node.data("wobId"));
 			if (that.appbus)
 				that.appbus.selectedWob(node.data("wobId"));
 		});
