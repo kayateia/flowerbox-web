@@ -28,9 +28,13 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 
 	private _cy: any;
 	private _graph: Room[];
+	private _player: number;
+	private _curRoom: number;
 
 	public moveNotification(what: fbapi.WobRef, from: fbapi.WobRef, to: fbapi.WobRef): void {
 		console.log("vis-graph noticed a movement", what, from, to);
+		if (what.id === this._player)
+			this._fbApiChanged();
 	}
 
 	@observe("fbapi")
@@ -39,13 +43,22 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 		if (!this.fbapi || !this.appbus)
 			return;
 
+		let debug: boolean = false;
+
 		let map: Room[] = [];
 		let updater = async () => {
 			let info: fbapi.Info = await this.fbapi.playerInfo();
-			console.log(info);
+			if (debug)
+				console.log(info);
+
+			if (info.container === this._curRoom)
+				return;
+			this._player = info.id;
+			this._curRoom = info.container;
 
 			let exitInfo: fbapi.Info = await this.fbapi.wobInfo("@exit");
-			console.log("Exit:", exitInfo);
+			if (debug)
+				console.log("Exit:", exitInfo);
 
 			let exploreNext = async (loc: number, remainingDist: number) => {
 				if (remainingDist <= 0) {
@@ -61,10 +74,12 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 				}
 
 				let hereInfo: fbapi.Info = await this.fbapi.wobInfo(loc);
-				console.log("Here", hereInfo);
+				if (debug)
+					console.log("Here", hereInfo);
 
 				let contents: fbapi.InfoList = await this.fbapi.wobContents(loc);
-				console.log("Contents", contents);
+				if (debug)
+					console.log("Contents", contents);
 
 				// Find all the exits.
 				let exits: fbapi.Info[] = [];
@@ -102,14 +117,18 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 					let oldRooms = map.filter(r => r.id === exId);
 					if (oldRooms.length > 0) {
 						if (oldRooms[0].name !== "*") {
-							console.log(loc, "SKIPPING", exId, "as it's not a * room", remainingDist);
+							if (debug)
+								console.log(loc, "SKIPPING", exId, "as it's not a * room", remainingDist);
 							continue;
 						} else {
-							console.log(loc, "GIVING", exId, "another chance", remainingDist);
+							if (debug)
+								console.log(loc, "GIVING", exId, "another chance", remainingDist);
 							map = map.filter(r => r.id !== exId);
 						}
-					} else
-						console.log(loc, "EXPLORING", exId, remainingDist);
+					} else {
+						if (debug)
+							console.log(loc, "EXPLORING", exId, remainingDist);
+					}
 
 					await exploreNext(exId, remainingDist - 1);
 				}
@@ -120,7 +139,8 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 		};
 		updater()
 			.then(() => {
-				console.log("Final map:", JSON.stringify(map, null, 4));
+				if (debug)
+					console.log("Final map:", JSON.stringify(map, null, 4));
 				this._graph = map;
 				this.attached();
 
@@ -177,7 +197,7 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 				}
 			}
 		}
-		console.log("Finished graph:", JSON.stringify(es, null, 4));
+		// console.log("Finished graph:", JSON.stringify(es, null, 4));
 		return es;
 	}
 

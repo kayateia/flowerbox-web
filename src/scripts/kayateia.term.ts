@@ -514,8 +514,8 @@ let TermAjax = {
 			}
 
 			TermAjax.newest = Math.max(TermAjax.newest, log.timestamp);
-			TermAjax.firstCheck = false;
 		});
+		TermAjax.firstCheck = false;
 
 		/*if (data.text)
 			Term.write(data.text);
