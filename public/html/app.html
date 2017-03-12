@@ -91,19 +91,8 @@
 							<!-- <paper-progress value="10" indeterminate bottom-item></paper-progress> -->
 				 		</app-toolbar>
 					</app-header>
-					<!-- because CSS is stupid -->
-					<table width="100%" height="100%">
-						<tr width="100%">
-							<td height="60%">
-								<vis-graph></vis-graph>
-							</td>
-						</tr>
-						<tr width="100%">
-							<td height="40%">
-								<fb-terminal fbapi="{{_fbapi}}"></fb-terminal>
-							</td>
-						</tr>
-					</table>
+					<vis-graph></vis-graph>
+					<fb-terminal fbapi="{{_fbapi}}"></fb-terminal>
 				</app-header-layout>
 			</app-drawer-layout>
 		</app-drawer-layout>
