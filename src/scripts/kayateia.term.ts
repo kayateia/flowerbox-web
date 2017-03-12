@@ -463,6 +463,8 @@ let TermAjax = {
 	// Are we doing the initial check?
 	firstCheck: true,
 
+	initted: false,
+
 	// Executes the command on the server via AJAX, with a nice spinner.
 	// If squelchText is non-null/empty, it will be printed instead of the command.
 	exec: function(commandText, squelchText) {
@@ -565,8 +567,11 @@ let TermAjax = {
 	},
 
 	init: function() {
-		Term.settings.commandHandler = TermAjax.exec;
-		TermAjax.pushBegin();
+		if (!TermAjax.initted) {
+			Term.settings.commandHandler = TermAjax.exec;
+			TermAjax.pushBegin();
+			TermAjax.initted = true;
+		}
 	}
 };
 
