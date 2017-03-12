@@ -22,16 +22,14 @@
 	border-width: 1px;
 	border-color: #f88;
 }
-#mainterm {
-	/* 40% of the viewport height minus the height of the top toolbar */
-	height: calc(40vh - 64px);
+#mainterm .terminal {
+	/* (40% viewport height) - (half height of top toolbar) - (padding) */
+	height: calc(40vh - 32px - 10px);
 }
 .terminal {
-	position: absolute;
 	width: 100%;
-	height: 100%;
-	margin: 0px 0px 0px 0px;
-	padding: 5px 5px 5px 5px;
+	margin: 0;
+	padding: 5px;
 	overflow: hidden;
 
 	background-color: #000;
@@ -40,7 +38,7 @@
 	font-size: 12pt;
 }
 .terminal div {
-	margin: 0px 0px 0px 0px;
+	margin: 0;
 }
 .terminal p, .terminal span, .terminal a {
 	white-space: pre-wrap;
