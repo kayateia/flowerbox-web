@@ -84,16 +84,23 @@ class Flowerbox {
 		});
 	}
 
-	public wobInfo(id: number): Promise<fbapi.Info> {
+	public wobInfo(id: number | string): Promise<fbapi.Info> {
 		return new Promise<fbapi.Info>((res, rej) => {
 			let settings = this.getStandardGet(this._url + "world/wob/" + id + "/info", res, rej);
 			$.ajax(settings);
 		});
 	}
 
-	public wobContents(id: number): Promise<fbapi.InfoList> {
+	public wobContents(id: number | string): Promise<fbapi.InfoList> {
 		return new Promise<fbapi.InfoList>((res, rej) => {
 			let settings = this.getStandardGet(this._url + "world/wob/" + id + "/contents", res, rej);
+			$.ajax(settings);
+		});
+	}
+
+	public wobPropertyValue(wobId: number | string, propertyId: string): Promise<fbapi.Property> {
+		return new Promise<fbapi.Property>((res, rej) => {
+			let settings = this.getStandardGet(this._url + "world/wob/" + wobId + "/property/" + propertyId, res, rej);
 			$.ajax(settings);
 		});
 	}
@@ -101,7 +108,7 @@ class Flowerbox {
 	public terminalExec(command: string): Promise<void> {
 		return new Promise<void>((res, rej) => {
 			let settings = this.getStandardAjax(rej);
-			settings.url = this._url + "terminal/command";
+			settings.url = this._url + "terminal/command"
 				+ "/" + escape(command)
 				+ "?datehack=" + new Date().getTime(),
 			settings.method = "GET";
