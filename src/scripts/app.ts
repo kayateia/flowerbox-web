@@ -50,8 +50,8 @@ class AppComponent extends polymer.Base implements polymer.Element {
 
 	private _login(event: any) {
 		let info: LoginInfo = event.detail;
-		this._fbapi.login(info.login, info.password, (token: string, error: string) => {
-			if (token) {
+		this._fbapi.login(info.login, info.password)
+			.then((token: string) => {
 				console.log("got token", token);
 				this.$.loginmodal.close();
 
@@ -61,11 +61,11 @@ class AppComponent extends polymer.Base implements polymer.Element {
 					admin: false
 				};
 				Cookies.set("flowerbox", JSON.stringify(this._cookie));
-			} else {
+			})
+			.catch((error: string) => {
 				console.log("got error", error);
 				this.$.loginmodal.error(error);
-			}
-		});
+			});
 	}
 }
 

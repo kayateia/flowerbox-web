@@ -18,21 +18,21 @@ class VisGraph extends polymer.Base implements polymer.Element {
 
 	@observe("fbapi")
 	private _fbApiChanged() {
-		function err(error: string) {
-			console.log(err);
-		}
-
-		this.fbapi.playerInfo((info: fbapi.Info) => {
+		let updater = async () => {
+			let info: fbapi.Info = await this.fbapi.playerInfo();
 			console.log(info);
 
 			let loc: number = info.container;
-			this.fbapi.wobInfo(loc, (hereInfo: fbapi.Info) => {
-				console.log("Here", hereInfo);
-				this.fbapi.wobContents(loc, (contents: fbapi.InfoList) => {
-					console.log("Contents", contents);
-				}, err);
-			}, err);
-		}, err);
+			let hereInfo: fbapi.Info = await this.fbapi.wobInfo(loc);
+			console.log("Here", hereInfo);
+
+			let contents: fbapi.InfoList = await this.fbapi.wobContents(loc);
+			console.log("Contents", contents);
+		};
+		updater()
+			.catch((err: string) => {
+				console.log("Error updating graph vis:", err);
+			});
 	}
 
 	private _elements(graph): any {

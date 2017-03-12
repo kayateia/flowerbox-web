@@ -23,24 +23,29 @@ class Flowerbox {
 		return this._token;
 	}
 
-	public login(login: string, password: string, callback: (token: string, errorMessage: string) => void) {
-		let settings: JQueryAjaxSettings = {
-			url: this._url + "user/login/" + login,
-			method: "POST",
-			dataType: "json",
-			data: {
-				password: password,
-				admin: false
-			},
-			success: (data: fbapi.LoginResult, status: string, xhr: JQueryXHR) => {
-				this._token = data.token;
-				callback(data.token, null);
-			},
-			error: (xhr: JQueryXHR, status: string, error: string) => {
-				callback(null, xhr.responseJSON.error);
-			}
-		};
-		$.ajax(settings);
+	public login(login: string, password: string): Promise<string> {
+		return new Promise<string>((res, rej) => {
+			let settings: JQueryAjaxSettings = {
+				url: this._url + "user/login/" + login,
+				method: "POST",
+				dataType: "json",
+				data: {
+					password: password,
+					admin: false
+				},
+				success: (data: fbapi.LoginResult, status: string, xhr: JQueryXHR) => {
+					this._token = data.token;
+					res(this._token);
+				},
+				error: (xhr: JQueryXHR, status: string, error: string) => {
+					if (xhr.responseJSON)
+						rej(xhr.responseJSON.error);
+					else
+						rej(error);
+				}
+			};
+			$.ajax(settings);
+		});
 	}
 
 	// Returns headers to be used on logged-in calls.
@@ -72,32 +77,42 @@ class Flowerbox {
 		return settings;
 	}
 
-	public playerInfo(success: (info: fbapi.Info) => void, error: (errorMessage: string) => void) {
-		let settings = this.getStandardGet(this._url + "user/player-info", success, error);
-		$.ajax(settings);
+	public playerInfo(): Promise<fbapi.Info> {
+		return new Promise<fbapi.Info>((res, rej) => {
+			let settings = this.getStandardGet(this._url + "user/player-info", res, rej);
+			$.ajax(settings);
+		});
 	}
 
-	public wobInfo(id: number, success: (info: fbapi.Info) => void, error: (errorMessage: string) => void) {
-		let settings = this.getStandardGet(this._url + "world/wob/" + id + "/info", success, error);
-		$.ajax(settings);
+	public wobInfo(id: number): Promise<fbapi.Info> {
+		return new Promise<fbapi.Info>((res, rej) => {
+			let settings = this.getStandardGet(this._url + "world/wob/" + id + "/info", res, rej);
+			$.ajax(settings);
+		});
 	}
 
-	public wobContents(id: number, success: (info: fbapi.InfoList) => void, error: (errorMessage: string) => void) {
-		let settings = this.getStandardGet(this._url + "world/wob/" + id + "/contents", success, error);
-		$.ajax(settings);
+	public wobContents(id: number): Promise<fbapi.InfoList> {
+		return new Promise<fbapi.InfoList>((res, rej) => {
+			let settings = this.getStandardGet(this._url + "world/wob/" + id + "/contents", res, rej);
+			$.ajax(settings);
+		});
 	}
 
-	public terminalExec(command: string, success: () => void, error: (errorMessage: string) => void) {
-		let settings = this.getStandardAjax(error);
-		settings.url = this._url + "terminal/command";
-			+ "/" + escape(command)
-			+ "?datehack=" + new Date().getTime(),
-		settings.method = "GET";
-		settings.success = success;
-		settings.timeout = 30000;
-		$.ajax(settings);
+	public terminalExec(command: string): Promise<void> {
+		return new Promise<void>((res, rej) => {
+			let settings = this.getStandardAjax(rej);
+			settings.url = this._url + "terminal/command";
+				+ "/" + escape(command)
+				+ "?datehack=" + new Date().getTime(),
+			settings.method = "GET";
+			settings.success = res;
+			settings.timeout = 30000;
+			$.ajax(settings);
+		});
 	}
 
+	// This one is still done as a callback because of its extra error handling requirements;
+	// this isn't a big deal, I think, because it's only used in one place.
 	public terminalNewEvents(since: number, success: (data: fbapi.EventStream) => void, error: (timeout: boolean, errorMessage: string) => void) {
 		let settings = this.getStandardAjax(null);
 		settings.url = this._url + "terminal/new-events"
@@ -109,5 +124,6 @@ class Flowerbox {
 			error(status === "timeout", errorMsg);
 		};
 		settings.timeout = 12000;
+		$.ajax(settings);
 	}
 }

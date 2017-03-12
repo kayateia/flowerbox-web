@@ -14,7 +14,8 @@
 		"noLib": false,
 		"preserveConstEnums": true,
 		"suppressImplicitAnyIndexErrors": true,
-		"outDir": "js"
+		"outDir": "js",
+		"lib": ["dom", "es6", "dom.iterable", "scripthost"]
 	},
 	"exclude": [
 		"node_modules",

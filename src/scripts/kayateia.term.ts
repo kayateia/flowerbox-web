@@ -465,9 +465,13 @@ let TermAjax = {
 		if (!squelchText)
 			squelchText = commandText;
 		var spinnerId = Term.writeCommand(squelchText, true);
-		TermAjax.settings.fbapi.terminalExec(commandText, () => {
-			Term.spinner.finish(spinnerId);
-		}, TermAjax.standardErrorHandler(spinnerId));
+		TermAjax.settings.fbapi.terminalExec(commandText)
+			.then(() => {
+				Term.spinner.finish(spinnerId);
+			})
+			.catch(() => {
+				TermAjax.standardErrorHandler(spinnerId);
+			});
 	},
 
 	handleResponse: function(data) {
