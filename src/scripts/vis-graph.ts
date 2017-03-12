@@ -19,15 +19,26 @@ interface Room {
 }
 
 @component("vis-graph")
-class VisGraph extends polymer.Base implements polymer.Element {
+class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 	@property({ type: Object, notify: true })
 	public fbapi: Flowerbox;
+
+	@property({ type: Object, notify: true })
+	public appbus: AppBus;
 
 	private _cy: any;
 	private _graph: Room[];
 
+	public moveNotification(what: fbapi.WobRef, from: fbapi.WobRef, to: fbapi.WobRef): void {
+		console.log("vis-graph noticed a movement", what, from, to);
+	}
+
 	@observe("fbapi")
+	@observe("appbus")
 	private _fbApiChanged() {
+		if (!this.fbapi || !this.appbus)
+			return;
+
 		let map: Room[] = [];
 		let updater = async () => {
 			let info: fbapi.Info = await this.fbapi.playerInfo();
@@ -69,7 +80,6 @@ class VisGraph extends polymer.Base implements polymer.Element {
 						let targetId: fbapi.Property = await this.fbapi.wobPropertyValue(ex.id, "target");
 						if (targetId) {
 							let resolvedExit: fbapi.Info = await this.fbapi.wobInfo(targetId.value);
-							console.log("Would explore", targetId.value, resolvedExit.id);
 							exitTargets.push(resolvedExit.id);
 						}
 					} catch(err) {
@@ -81,14 +91,26 @@ class VisGraph extends polymer.Base implements polymer.Element {
 					id: loc,
 					name: hereInfo.name,
 					desc: hereInfo.desc,
-					type: 0,
+					type: loc === info.container ? 2 : 0,
 					exit: false,
 					exits: exitTargets
 				});
 
 				for (let exId of exitTargets) {
-					if (map.filter(r => r.id === exId).length > 0)
-						continue;
+					// If we've reached an old room, we need to check to see if it was a
+					// too-far-terminal. If so, nuke it and try again. Otherwise, skip.
+					let oldRooms = map.filter(r => r.id === exId);
+					if (oldRooms.length > 0) {
+						if (oldRooms[0].name !== "*") {
+							console.log(loc, "SKIPPING", exId, "as it's not a * room", remainingDist);
+							continue;
+						} else {
+							console.log(loc, "GIVING", exId, "another chance", remainingDist);
+							map = map.filter(r => r.id !== exId);
+						}
+					} else
+						console.log(loc, "EXPLORING", exId, remainingDist);
+
 					await exploreNext(exId, remainingDist - 1);
 				}
 			};
@@ -101,6 +123,8 @@ class VisGraph extends polymer.Base implements polymer.Element {
 				console.log("Final map:", JSON.stringify(map, null, 4));
 				this._graph = map;
 				this.attached();
+
+				this.appbus.listen("vis-graph", this);
 			})
 			.catch((err: string) => {
 				console.log("Error updating graph vis:", err);
