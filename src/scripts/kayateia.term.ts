@@ -76,15 +76,17 @@ let Term = {
 			var display = $(Term.settings.div).find('.terminal');
 			display.animate({
 				scrollTop: display.scrollTop() + pages * (display.height() * .75)
-			}, 100, 'linear');
+			}, 50, 'linear');
 		},
 
 		// Scroll to the bottom.
 		toBottom: function() {
 			var display = $(Term.settings.div).find('.terminal');
-			display.animate({
-				scrollTop: display.prop('scrollHeight')
-			}, 100, 'linear');
+			setTimeout(() => {
+				display.animate({
+					scrollTop: display.prop('scrollHeight')
+				}, 100, 'linear');
+			}, 0);
 		}
 	},
 
