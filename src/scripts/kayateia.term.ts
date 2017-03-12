@@ -692,14 +692,14 @@ let SoundHandler = {
 };
 
 // Activate the terminal. This should be called only after the document is loaded.
-function termInit(terminalDiv: HTMLElement) {
+function termInit(terminalDiv: HTMLElement): void {
 	Term.init(terminalDiv);
 	TermLocal.init();
 	SoundHandler.init();
 	HelpHandler.init();
 }
 
-function termSetApi(fbapi: Flowerbox, appbus: AppBus) {
+function termSetApi(fbapi: Flowerbox, appbus: AppBus): void {
 	TermAjax.settings.fbapi = fbapi;
 	TermAjax.settings.appbus = appbus;
 	TermAjax.init();
