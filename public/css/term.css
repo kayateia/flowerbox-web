@@ -25,6 +25,8 @@
 #mainterm .terminal {
 	/* (40% viewport height) - (half height of top toolbar) - (padding) */
 	height: calc(40vh - 32px - 10px);
+	overflow-x: visible;
+	overflow-y: scroll;
 }
 .terminal {
 	width: 100%;
