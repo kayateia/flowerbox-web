@@ -32,7 +32,7 @@ class Flowerbox {
 				password: password,
 				admin: false
 			},
-			success: (data: any, status: string, xhr: JQueryXHR) => {
+			success: (data: fbapi.LoginResult, status: string, xhr: JQueryXHR) => {
 				this._token = data.token;
 				callback(data.token, null);
 			},
@@ -43,48 +43,71 @@ class Flowerbox {
 		$.ajax(settings);
 	}
 
-	public terminalExec(command: string, success: () => void, error: (errorMessage: string) => void) {
-		let execUrl: string = this._url + "terminal/command";
-
-		$.ajax({
-			url: execUrl
-					+ "/" + escape(command)
-					+ "?datehack=" + new Date().getTime(),
-			headers: {
-				"Authorization": "Bearer " + this._token
-			},
-			method: "GET",
-			success: (data: any) => {
-				success();
-			},
-			error: (xhr: JQueryXHR, status: string, errorMsg: string) => {
-				if (xhr.responseJSON)
-					error(xhr.responseJSON.error);
-				else
-					error(errorMsg);
-			},
-			timeout: 30000
-		});
+	// Returns headers to be used on logged-in calls.
+	private getHeaders(): any {
+		return {
+			"Authorization": "Bearer " + this._token
+		};
 	}
 
-	public terminalNewEvents(since: number, success: (data: any) => void, error: (timeout: boolean, errorMessage: string) => void) {
-		let pushUrl: string = this._url + "terminal/new-events";
-
-		$.ajax({
-			url: pushUrl
-				+ "?datehack=" + new Date().getTime()
-				+ "&since=" + since,
-			headers: {
-				"Authorization": "Bearer " + this._token
-			},
-			method: "GET",
-			success: (data: any) => {
-				success(data);
-			},
+	// Returns a settings block for a standard AJAX request while logged in. Fill in extra members as needed.
+	private getStandardAjax(err: (errorMessage: string) => void): JQueryAjaxSettings {
+		let settings: JQueryAjaxSettings = {
+			headers: this.getHeaders(),
 			error: (xhr: JQueryXHR, status: string, errorMsg: string) => {
-				error(status === "timeout", errorMsg);
-			},
-			timeout: 12000
-		});
+				if (xhr.responseJSON)
+					err(xhr.responseJSON.error);
+				else
+					err(errorMsg);
+			}
+		};
+		return settings;
+	}
+
+	private getStandardGet(url: string, success: (info: any) => void, error: (errorMessage: string) => void): JQueryAjaxSettings {
+		let settings = this.getStandardAjax(error);
+		settings.url = url;
+		settings.method = "GET";
+		settings.success = success;
+		return settings;
+	}
+
+	public playerInfo(success: (info: fbapi.Info) => void, error: (errorMessage: string) => void) {
+		let settings = this.getStandardGet(this._url + "user/player-info", success, error);
+		$.ajax(settings);
+	}
+
+	public wobInfo(id: number, success: (info: fbapi.Info) => void, error: (errorMessage: string) => void) {
+		let settings = this.getStandardGet(this._url + "world/wob/" + id + "/info", success, error);
+		$.ajax(settings);
+	}
+
+	public wobContents(id: number, success: (info: fbapi.InfoList) => void, error: (errorMessage: string) => void) {
+		let settings = this.getStandardGet(this._url + "world/wob/" + id + "/contents", success, error);
+		$.ajax(settings);
+	}
+
+	public terminalExec(command: string, success: () => void, error: (errorMessage: string) => void) {
+		let settings = this.getStandardAjax(error);
+		settings.url = this._url + "terminal/command";
+			+ "/" + escape(command)
+			+ "?datehack=" + new Date().getTime(),
+		settings.method = "GET";
+		settings.success = success;
+		settings.timeout = 30000;
+		$.ajax(settings);
+	}
+
+	public terminalNewEvents(since: number, success: (data: fbapi.EventStream) => void, error: (timeout: boolean, errorMessage: string) => void) {
+		let settings = this.getStandardAjax(null);
+		settings.url = this._url + "terminal/new-events"
+			+ "?datehack=" + new Date().getTime()
+			+ "&since=" + since;
+		settings.method = "GET";
+		settings.success = success;
+		settings.error = (xhr: JQueryXHR, status: string, errorMsg: string) => {
+			error(status === "timeout", errorMsg);
+		};
+		settings.timeout = 12000;
 	}
 }

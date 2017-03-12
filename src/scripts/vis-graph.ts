@@ -11,7 +11,29 @@ declare let cytoscape: any;
 
 @component("vis-graph")
 class VisGraph extends polymer.Base implements polymer.Element {
+	@property({ type: Object, notify: true })
+	public fbapi: Flowerbox;
+
 	private _cy: any;
+
+	@observe("fbapi")
+	private _fbApiChanged() {
+		function err(error: string) {
+			console.log(err);
+		}
+
+		this.fbapi.playerInfo((info: fbapi.Info) => {
+			console.log(info);
+
+			let loc: number = info.container;
+			this.fbapi.wobInfo(loc, (hereInfo: fbapi.Info) => {
+				console.log("Here", hereInfo);
+				this.fbapi.wobContents(loc, (contents: fbapi.InfoList) => {
+					console.log("Contents", contents);
+				}, err);
+			}, err);
+		}, err);
+	}
 
 	private _elements(graph): any {
 		var es = [];
