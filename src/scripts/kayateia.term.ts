@@ -482,6 +482,11 @@ let TermAjax = {
 			});
 	},
 
+	click: function(item: number): void {
+		console.log("Terminal clicked", item);
+		TermAjax.settings.appbus.selectedWob(item);
+	},
+
 	handleResponse: function(data: fbapi.EventStream) {
 		if (!data.success) {
 			console.log("Got bad console output response:", data.error);
@@ -499,7 +504,7 @@ let TermAjax = {
 				var items = log.items.map(function(i) {
 					if (typeof(i) === "object") {
 						if (i.rich === "wob")
-							i = '<a style="color:#5aa" href="/objinfo/' + i.id + '">' + i.text + "</a>";
+							i = '<a style="color:#5aa" href="#" onclick="TermAjax.click(' + i.id + ');">' + i.text + "</a>";
 					}
 					return i;
 				});

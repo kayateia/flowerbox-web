@@ -5,7 +5,8 @@
 */
 
 interface AppBusListener {
-	moveNotification(what: fbapi.WobRef, from: fbapi.WobRef, to: fbapi.WobRef): void;
+	moveNotification?(what: fbapi.WobRef, from: fbapi.WobRef, to: fbapi.WobRef): void;
+	selectedWob?(what: number): void;
 }
 
 interface AppBusDictionary {
@@ -25,7 +26,15 @@ class AppBus {
 
 	public moveNotification(what: fbapi.WobRef, from: fbapi.WobRef, to: fbapi.WobRef): void {
 		for (let lid in this._listeners) {
-			this._listeners[lid].moveNotification(what, from, to);
+			if (this._listeners[lid].moveNotification)
+				this._listeners[lid].moveNotification(what, from, to);
+		}
+	}
+
+	public selectedWob(what: number): void {
+		for (let lid in this._listeners) {
+			if (this._listeners[lid].selectedWob)
+				this._listeners[lid].selectedWob(what);
 		}
 	}
 }

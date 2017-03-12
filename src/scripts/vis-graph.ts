@@ -178,6 +178,7 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 				group: "nodes",
 				data: {
 					id: idMap[room.id],
+					wobId: room.id,
 					label: room.name,
 					desc: room.desc
 				},
@@ -257,10 +258,18 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 			elements: this._elements(graph)
 		});
 
-		/*cy.on("mouseover", "node", function(e) {
-			var node = this;
-			$("#desc").text(node.data("label"));
+		let that = this;
+		/*this._cy.on("mouseover", "node", function(e) {
+			let node = this;
+			that.$.desc.innerText = node.data("desc");
 		}); */
+
+		this._cy.on("click", "node", function(e) {
+			let node = this;
+			console.log("Graph clicked", node.data("wobId"));
+			if (that.appbus)
+				that.appbus.selectedWob(node.data("wobId"));
+		});
 	}
 }
 
