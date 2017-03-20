@@ -19,6 +19,7 @@
 <link rel="import" href="/html/login.html" />
 <link rel="import" href="/html/vis-graph.html" />
 <link rel="import" href="/html/terminal.html" />
+<link rel="import" href="/html/command-bar.html" />
 <link rel="import" href="/html/property-bar.html" />
 
 <dom-module id="fb-app">
@@ -79,9 +80,7 @@
 					<app-toolbar>
 						<div main-title>Flowerbox - {{_cookie.login}}</div>
 					</app-toolbar>
-					<paper-card>
-						<div>Some stuff.</div>
-					</paper-card>
+					<command-bar fbapi="{{_fbapi}}" appbus="{{_bus}}"></command-bar>
 				</app-drawer>
 				<app-header-layout>
 				 	<app-header fixed>

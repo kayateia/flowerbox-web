@@ -1,0 +1,63 @@
+<!--
+	Flowerbox
+	Copyright (C) 2017 Kayateia
+	For license info, please see notes/gpl-3.0.txt under the project root.
+-->
+
+<link rel="import" href="/bower_components/paper-card/paper-card.html" />
+
+<dom-module id="command-bar">
+	<template>
+		<style>
+			paper-card {
+				width: 100%;
+				padding: 3px 3px 3px 3px;
+				margin-left: 1px;
+				margin-right: 1px;
+				margin-bottom: 1px;
+
+				--paper-card-header: {
+					overflow: inherit;
+				};
+			}
+
+			paper-card.tool {
+				background-color: #ccc;
+				color: #000;
+			}
+
+			paper-card.header {
+				background-color: #446;
+				color: #fff;
+			}
+
+			.tool-content {
+				@apply(--layout-flex);
+			}
+
+			.card-content {
+				padding: 0;
+			}
+		</style>
+		<div>
+			<paper-card class="header">
+				<div class="tool-content">
+					<div class="card-content">
+						Objects
+					</div>
+				</div>
+			</paper-card>
+			<template is="dom-repeat" items="{{_tools}}">
+				<paper-card class="tool">
+					<div class="tool-content">
+						<div class="card-content">
+							{{item.name}}
+						</div>
+					</div>
+				</paper-card>
+			</template>
+		</div>
+	</template>
+</dom-module>
+
+<script src="/scripts/command-bar.js"></script>
