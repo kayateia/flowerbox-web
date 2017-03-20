@@ -11,10 +11,10 @@
 		<style>
 			paper-card {
 				width: 100%;
-				padding: 5px 5px 5px 5px;
+				padding: 3px 3px 3px 3px;
 				margin-left: 1px;
 				margin-right: 1px;
-				margin-bottom: 3px;
+				margin-bottom: 0;
 				background-color: #ccc;
 				color: #000;
 			}
@@ -22,6 +22,11 @@
 			.property-content {
 				@apply(--layout-flex);
 				float: left;
+				text-align: left;
+			}
+
+			.card-content {
+				padding: 0;
 			}
 
 			.property-name {
@@ -31,16 +36,18 @@
 			.property-value {
 			}
 		</style>
-		<template is="dom-repeat" items="{{_properties}}">
-			<paper-card>
-				<div class="property-content">
-					<div class="card-content">
-						<div class="property-name">{{item.name}}</div>
-						<div class="property-value">{{item.value}}</div>
+		<div>
+			<template is="dom-repeat" items="{{_properties}}">
+				<paper-card>
+					<div class="property-content">
+						<div class="card-content">
+							<div class="property-name">{{item.name}}</div>
+							<div class="property-value">{{item.value}}</div>
+						</div>
 					</div>
-				</div>
-			</paper-card>
-		</template>
+				</paper-card>
+			</template>
+		</div>
 	</template>
 </dom-module>
 
