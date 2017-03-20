@@ -19,6 +19,10 @@ class PropertyBar extends polymer.Base implements polymer.Element, AppBusListene
 		{ name: "No item selected", value: "" }
 	];
 
+	@property({ type: Array, notify: true })
+	private _contents: any[] = [
+	];
+
 	public selectedWob(what: number): void {
 		console.log("property-bar noticed a selection", what);
 		(async () => {
@@ -28,6 +32,9 @@ class PropertyBar extends polymer.Base implements polymer.Element, AppBusListene
 				{ name: "Name", value: info.name },
 				{ name: "Description", value: info.desc }
 			]);
+
+			let contents: fbapi.InfoList = await this.fbapi.wobContents(what);
+			this.set("_contents", contents.list);
 		})()
 			.catch((err: string) => {
 				this.set("_properties", [

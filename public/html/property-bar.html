@@ -14,9 +14,21 @@
 				padding: 3px 3px 3px 3px;
 				margin-left: 1px;
 				margin-right: 1px;
-				margin-bottom: 0;
+				margin-bottom: 1px;
+
+				--paper-card-header: {
+					overflow: inherit;
+				};
+			}
+
+			paper-card.property {
 				background-color: #ccc;
 				color: #000;
+			}
+
+			paper-card.header {
+				background-color: #446;
+				color: #fff;
 			}
 
 			.property-content {
@@ -37,12 +49,37 @@
 			}
 		</style>
 		<div>
+			<paper-card class="header">
+				<div class="property-content">
+					<div class="card-content">
+						<div class="property-name">Properties</div>
+					</div>
+				</div>
+			</paper-card>
 			<template is="dom-repeat" items="{{_properties}}">
-				<paper-card>
+				<paper-card class="property">
 					<div class="property-content">
 						<div class="card-content">
 							<div class="property-name">{{item.name}}</div>
 							<div class="property-value">{{item.value}}</div>
+						</div>
+					</div>
+				</paper-card>
+			</template>
+
+			<paper-card class="header">
+				<div class="property-content">
+					<div class="card-content">
+						<div class="property-name">Contents</div>
+					</div>
+				</div>
+			</paper-card>
+			<template is="dom-repeat" items="{{_contents}}">
+				<paper-card class="property">
+					<div class="property-content">
+						<div class="card-content">
+							<div class="property-name">{{item.name}} (#{{item.id}})</div>
+							<div class="property-value">{{item.desc}}</div>
 						</div>
 					</div>
 				</paper-card>
