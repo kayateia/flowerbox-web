@@ -203,10 +203,6 @@ class VisGraph extends polymer.Base implements polymer.Element, AppBusListener {
 	}
 
 	public attached() {
-		/*var w = 15;
-		var h = 15;
-		var punchpct = 5;
-		var graph = maze(w, h, punchpct); */
 		let graph = this._graph;
 		if (!graph)
 			return;
